@@ -1,0 +1,8 @@
+prefix=/home/ubuntu/project_work/build/devel
+
+Name: project_pkg
+Description: Description of project_pkg
+Version: 0.1.0
+Cflags: 
+Libs: -L/home/ubuntu/project_work/build/devel/lib 
+Requires: 
