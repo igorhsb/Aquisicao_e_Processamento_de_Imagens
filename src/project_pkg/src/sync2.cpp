@@ -17,7 +17,7 @@ SyncronizeDevices::SyncronizeDevices(ros::NodeHandle n) :
 	laserPoints = (float*) malloc(s*sizeof(float));
 	sync.registerCallback(boost::bind(&SyncronizeDevices::scanCallback,this, _1, _2));
 	astraRGB_sub = it_.subscribe("/camera/rgb/image_rect_color", 1, &SyncronizeDevices::RgbCallback, this);
-	//imu_sub2 = n_.subscribe("/imu_data_str", 1, &ImuSensor::Callback2, this);
+	imu_sub = n_.subscribe("/imu_data_str", 1, &SyncronizeDevices::Callback2, this);
 }
 
 SyncronizeDevices::~SyncronizeDevices(){
@@ -26,7 +26,10 @@ SyncronizeDevices::~SyncronizeDevices(){
 
 void SyncronizeDevices::scanCallback (const sensor_msgs::LaserScan::ConstPtr& scan_in , const sensor_msgs::PointCloud2ConstPtr &msg)
 {
-	
+	if(syncCond == 1){
+		pthread_mutex_lock(&mutexL);
+		pthread_cond_wait(&cond1,&mutexL);	
+    }
     try
     {
         projector_.transformLaserScanToPointCloud("laser",*scan_in, cloud,listener_);
@@ -59,6 +62,10 @@ void SyncronizeDevices::scanCallback (const sensor_msgs::LaserScan::ConstPtr& sc
   	std::vector<int> indicesNAN;
 	removeNaNFromPointCloud(*astraCloud, *astraCloud, indicesNAN);
 	
+	if(syncCond == 1){
+		pthread_cond_signal(&cond2);
+		pthread_mutex_unlock(&mutexL);
+	}
 }
 
 void SyncronizeDevices::RgbCallback(const sensor_msgs::ImageConstPtr& msg_rgb)
@@ -77,8 +84,11 @@ void SyncronizeDevices::RgbCallback(const sensor_msgs::ImageConstPtr& msg_rgb)
   //std::cout << "RGB" << std::endl;
 }
 
-void SyncornizeDevices::Callback2(const std_msgs::String::ConstPtr& imu_msg ){
-//pthread_mutex_lock(&mutexI);
+void SyncronizeDevices::Callback2(const std_msgs::String::ConstPtr& imu_msg ){
+    if(syncCond == 1){
+	    pthread_mutex_lock(&mutexI);
+	    pthread_cond_wait(&cond2,&mutexI);
+	}
     std::string aux = (std::string)imu_msg->data;
     std::string r = "", p = "", y = "";
     int i;
@@ -103,6 +113,14 @@ void SyncornizeDevices::Callback2(const std_msgs::String::ConstPtr& imu_msg ){
 	pitch = ceil(dadosImu.pitch*pow(10,2)) / pow(10,2);
 	yaw = ceil(dadosImu.yaw*pow(10,2)) / pow(10,2);
 			
+	//std::cout << "Yaw: " << yaw << std::endl;
+	//std::cout << "Roll: " << roll << std::endl;
+	//std::cout << "Pitch: " << pitch << std::endl;
+
 	imu_on = true;
-//pthread_mutex_unlock(&mutexI);
+
+	if(syncCond == 1){
+		pthread_mutex_unlock(&mutexI);
+		pthread_cond_signal(&cond3);
+	}
 }

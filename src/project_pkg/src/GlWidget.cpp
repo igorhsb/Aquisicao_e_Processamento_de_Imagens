@@ -589,17 +589,17 @@ void GLWidget::Stop()
     }
     if(status == 2){
     	if(syncCond != 1){
-    		laser.destroy();
+    		//laser->destroy();
     	}
     }
     if(status == 3){
     	if(syncCond != 1){
-    		astraDevice.destroy();
+    		//astraDevice->destroy();
     	}
     }
     if(status == 5){
     	if(syncCond != 1){
-    		imuDevice.destroy();
+    		//imuDevice->destroy();
     	}
     }
     
@@ -847,8 +847,15 @@ bool first = true;
 
 void GLWidget::zedCallback(){
 	
-	//pthread_mutex_lock(&mutexZ);
-  
+	if(syncCond == 1){
+		pthread_mutex_lock(&mutexZ);
+		if(first != true){
+			pthread_cond_wait(&cond3,&mutexZ);
+		}else{
+			first == false;
+		}
+	}
+	  
 	sl::Camera::sticktoCPUCore(2);
 	if(zedDevice.zed.grab(zedDevice.runtime_parameters) == 0){
     if (zedDevice.zed.retrieveImage(zedLeftImage, sl::VIEW_LEFT, sl::MEM_GPU) == sl::SUCCESS) {
@@ -877,12 +884,12 @@ void GLWidget::zedCallback(){
     }
 }
 
-/*	  if(syncCond == 1)
+	  if(syncCond == 1)
         {
             pthread_cond_signal(&cond1);
             pthread_mutex_unlock(&mutexZ);
         }
-*/
+
 }
 
 
