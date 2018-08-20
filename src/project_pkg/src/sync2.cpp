@@ -76,3 +76,33 @@ void SyncronizeDevices::RgbCallback(const sensor_msgs::ImageConstPtr& msg_rgb)
   rgb = rgb_ptr->image;
   //std::cout << "RGB" << std::endl;
 }
+
+void SyncornizeDevices::Callback2(const std_msgs::String::ConstPtr& imu_msg ){
+//pthread_mutex_lock(&mutexI);
+    std::string aux = (std::string)imu_msg->data;
+    std::string r = "", p = "", y = "";
+    int i;
+    for(i = 45; i < 74; i ++){
+    if((aux[i] <= '9' && aux[i] >= '0') || aux[i] == '.' || aux[i] == '-' )
+        y += aux[i];
+    }
+    for(i = 76; i < 97; i ++){
+    if((aux[i] <= '9' && aux[i] >= '0') || aux[i] == '.' || aux[i] == '-' )
+        r += aux[i];
+    }
+    for(i = 107; i < aux.length()-2; i ++){
+    if((aux[i] <= '9' && aux[i] >= '0') || aux[i] == '.' || aux[i] == '-' )
+        p += aux[i];
+    }
+	
+    dadosImu.yaw = std::stod(y.c_str());
+    dadosImu.roll = std::stod(r.c_str());
+    dadosImu.pitch = std::stod(p.c_str());
+	
+	roll = ceil(dadosImu.roll*pow(10,2)) / pow(10,2) ;
+	pitch = ceil(dadosImu.pitch*pow(10,2)) / pow(10,2);
+	yaw = ceil(dadosImu.yaw*pow(10,2)) / pow(10,2);
+			
+	imu_on = true;
+//pthread_mutex_unlock(&mutexI);
+}
