@@ -587,6 +587,22 @@ void GLWidget::Stop()
 		    free(colorPoints);
         }
     }
+    if(status == 2){
+    	if(syncCond != 1){
+    		laser.destroy();
+    	}
+    }
+    if(status == 3){
+    	if(syncCond != 1){
+    		astraDevice.destroy();
+    	}
+    }
+    if(status == 5){
+    	if(syncCond != 1){
+    		imuDevice.destroy();
+    	}
+    }
+    
     SetStatus(0);
     updateGL();
 }
@@ -664,6 +680,7 @@ void GLWidget::ImuInit(ros::NodeHandle nodeH){
     if(syncCond == 0){
         imuDevice = new ImuSensor(nodeH);
     }
+    SetStatus(5);
     updateGL();
 }
 
@@ -1116,10 +1133,10 @@ void GLWidget::LaserDraw()
 			glUniformMatrix4fv(matrix, 1, GL_FALSE, rawMat);
   			if(syncCond == 0){
   				glVertexAttribPointer(position, 3, GL_FLOAT, false, 4*sizeof(GLfloat), (float*)laser->laserCloud->points.data());//pointsL
-  				std::cout << "L" << std::endl;
+  				//std::cout << "L" << std::endl;
 			}
 			else{
-				std::cout << "Laser" << std::endl;
+				//std::cout << "Laser" << std::endl;
 				glVertexAttribPointer(position, 3, GL_FLOAT, false, 4*sizeof(GLfloat), (float*)syncDevs->laserCloud->points.data());//pointsL
 			}
 			glUniform1f(scale, scale_vec);

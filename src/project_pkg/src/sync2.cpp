@@ -74,5 +74,5 @@ void SyncronizeDevices::RgbCallback(const sensor_msgs::ImageConstPtr& msg_rgb)
     return;
   }
   rgb = rgb_ptr->image;
-  std::cout << "RGB" << std::endl;
+  //std::cout << "RGB" << std::endl;
 }
