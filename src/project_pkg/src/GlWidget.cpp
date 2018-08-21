@@ -5,7 +5,8 @@ int dispCB = 0, dispCB2 = 0, vModCB = 0, VModCB2 = 0, saveSignal = 0, exitCond =
 bool changeBTN = false, syncronize_devices = false;
 QString situation;
 bool situation_change = false;
-
+clock_t ck1, ck2, ck3, ck4, ck5;
+double time1 = 0, time2 = 0, time3 = 0, time4 = 0, time5 = 0;
 
 GLWidget::GLWidget(QWidget *parent, int stat) :
     QGLWidget(parent),
@@ -883,9 +884,14 @@ void GLWidget::zedCallback(){
 		zedDevice.cloud2pcl(zedPointCloud);
     }
 }
+	  if(first != true){
+	      time4 = ((double)( clock() - ck4 )) / CLOCKS_PER_SEC;
+    	  cout << "Imu ---> Zed" << time4 << " seconds" << endl;
 
+	  }
 	  if(syncCond == 1)
         {
+        	ck1 = clock();
             pthread_cond_signal(&cond1);
             pthread_mutex_unlock(&mutexZ);
         }

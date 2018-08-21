@@ -67,6 +67,9 @@
 #include <boost/thread/thread.hpp>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include <time.h>
+
 #endif
 
 
@@ -80,44 +83,8 @@ extern int dispCB, dispCB2, vModCB, VModCB2, exitCond, saveSignal, syncCond;
 extern bool changeBTN, imu_on, situation_change, laser_on, astra_on, zed_on;
 extern QString situation;
 extern float roll, pitch, yaw, imu_x, imu_y, imu_z, init_x, init_y, init_z, init_yaw, init_roll, init_pitch;
+extern clock_t ck1, ck2, ck3, ck4, ck5;
+extern double time1, time2, time3, time4, time5;
 
-/*using namespace message_filters;
-
-class Syncronize_Devices{
-
-public:
-
-  typedef sync_policies::ApproximateTime< sensor_msgs::PointCloud2, sensor_msgs::LaserScan > syncPolicy;
-  
-  Syncronize_Devices(ros::NodeHandle n, ros::NodeHandle n2);
-  ~Syncronize_Devices();
-  //, const std_msgs::StringConstPtr& imu_msg0
-  void Callback(const sensor_msgs::PointCloud2ConstPtr &msg, const sensor_msgs::LaserScanConstPtr& scan_in);
-  void RgbCallback(const sensor_msgs::ImageConstPtr& msg_rgb);
-  void scanCallback(const sensor_msgs::LaserScan::ConstPtr& scan_in);
-  void AstraCB(const sensor_msgs::PointCloud2ConstPtr& msg);
-  
-  cv::Mat rgb;
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr astraCloud;
-  float* points;
-  
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr laserCloud;
-  sensor_msgs::PointCloud cloud;
-  laser_geometry::LaserProjection projector_;
-  tf::TransformListener listener_;
-  tf::MessageFilter <sensor_msgs::LaserScan> laser_notifier_;
-  message_filters::Subscriber<sensor_msgs::LaserScan> laser_sub_;
-  
-  ros::NodeHandle n_, n2_;
-  ros::Subscriber scan_sub, point_sub;
-  image_transport::ImageTransport it_;
-  image_transport::Subscriber astraRGB_sub;
-  message_filters::Subscriber<sensor_msgs::PointCloud2> astraPTC_sub;
-  message_filters::Subscriber<sensor_msgs::LaserScan> laser_sub;
-  message_filters::Subscriber<std_msgs::String> imu_sub0;
-  message_filters::Subscriber<sensor_msgs::Imu> imu1_sub;
-  message_filters::Synchronizer< syncPolicy > sync;
-};
-*/
 
 #endif
