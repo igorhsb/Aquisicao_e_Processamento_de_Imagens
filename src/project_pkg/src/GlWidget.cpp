@@ -850,11 +850,11 @@ void GLWidget::zedCallback(){
 	
 	if(syncCond == 1){
 		pthread_mutex_lock(&mutexZ);
-		if(first != true){
-			pthread_cond_wait(&cond3,&mutexZ);
+		/*if(first != true){
+			//pthread_cond_wait(&cond3,&mutexZ);
 		}else{
 			first == false;
-		}
+		}*/
 	}
 	  
 	sl::Camera::sticktoCPUCore(2);
@@ -886,13 +886,28 @@ void GLWidget::zedCallback(){
 }
 	  if(first != true){
 	      time4 = ((double)( clock() - ck4 )) / CLOCKS_PER_SEC;
-    	  cout << "Imu ---> Zed" << time4 << " seconds" << endl;
-
+    	  //cout << "Imu ---> Zed" << time4 << " seconds" << endl;
+    	  situation.clear();
+    	  situation.append("Zed ---> Laser (s): ");
+    	  situation.append(QString::number(time1));
+    	  situation.append("\n");
+    	  situation.append("Laser ---> Astra (s): ");
+    	  situation.append(QString::number(time2));
+    	  situation.append("\n");
+    	  situation.append("Astra ---> Imu (s): ");
+    	  situation.append(QString::number(time3));
+    	  situation.append("\n");
+    	  situation.append("Imu ---> Zed (s): ");
+    	  situation.append(QString::number(time4));
+		  situation.append("\n");
+		  situation_change = true;
+		  
 	  }
 	  if(syncCond == 1)
         {
         	ck1 = clock();
             pthread_cond_signal(&cond1);
+            first = false;
             pthread_mutex_unlock(&mutexZ);
         }
 

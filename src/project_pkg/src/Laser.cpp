@@ -68,7 +68,7 @@ pthread_mutex_lock(&mutexL);
 	laser_on = true;
     if(syncronize_devices == true)
     {
-        pthread_cond_signal(&cond2);
+        pthread_cond_signal(&cond2); 
     }
    pthread_mutex_unlock(&mutexL);
    setStatus(1);

@@ -57,7 +57,7 @@ void SyncronizeDevices::scanCallback (const sensor_msgs::LaserScan::ConstPtr& sc
 	removeNaNFromPointCloud(*laserCloud, *laserCloud, indicesNAN2);
 
     time1 = ((double)( clock() - ck1 )) / CLOCKS_PER_SEC;
-    cout << "Zed ---> Laser" << time1 << " seconds" << endl;
+    //cout << "Zed ---> Laser" << time1 << " seconds" << endl;
 	ck2 = clock();
 	// ASTRA PointCloud
   	pcl::fromROSMsg(*msg, *astraCloud);
@@ -67,7 +67,7 @@ void SyncronizeDevices::scanCallback (const sensor_msgs::LaserScan::ConstPtr& sc
 	
 	if(syncCond == 1){
 	    time2 = ((double)( clock() - ck2 )) / CLOCKS_PER_SEC;
-	    cout << "Laser ---> Astra" << time2 << " seconds" << endl;
+	    //cout << "Laser ---> Astra" << time2 << " seconds" << endl;
 		ck3 = clock();
 		pthread_cond_signal(&cond2);
 		pthread_mutex_unlock(&mutexL);
@@ -123,7 +123,7 @@ void SyncronizeDevices::Callback2(const std_msgs::String::ConstPtr& imu_msg ){
 	//std::cout << "Roll: " << roll << std::endl;
 	//std::cout << "Pitch: " << pitch << std::endl;
     time3 = ((double)( clock() - ck3 )) / CLOCKS_PER_SEC;
-    cout << "Astra ---> Imu" << time3 << " seconds" << endl;
+    //cout << "Astra ---> Imu" << time3 << " seconds" << endl;
 	ck4 = clock();
 	imu_on = true;
 

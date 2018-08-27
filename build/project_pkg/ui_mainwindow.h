@@ -106,7 +106,7 @@ public:
         viewFrame_2->setFrameShadow(QFrame::Raised);
         txtBox = new QTextBrowser(mainGpBox);
         txtBox->setObjectName(QString::fromUtf8("txtBox"));
-        txtBox->setGeometry(QRect(1040, 50, 231, 61));
+        txtBox->setGeometry(QRect(1040, 40, 231, 71));
         lblConnect = new QLabel(mainGpBox);
         lblConnect->setObjectName(QString::fromUtf8("lblConnect"));
         lblConnect->setGeometry(QRect(1040, 20, 231, 20));
@@ -178,7 +178,7 @@ public:
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 1280, 25));
+        menuBar->setGeometry(QRect(0, 0, 1280, 22));
         menuFile = new QMenu(menuBar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuAbout = new QMenu(menuBar);
