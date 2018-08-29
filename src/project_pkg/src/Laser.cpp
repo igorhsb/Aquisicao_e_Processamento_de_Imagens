@@ -22,20 +22,24 @@ LaserS::LaserS(ros::NodeHandle n) :
 	laserCloud->points.resize(729);
 	laserPoints = (float*) malloc(s*sizeof(float));
     scan_sub = n_.subscribe("/scan", 1, &LaserS::scanCallback, this);
+    //setStatus(1);
     //  scan_pub_ = n_.advertise<sensor_msgs::PointCloud>("/my_cloud",1);
+    //scan_sub.shutdown();
 }
 
 LaserS::~LaserS(){
-	status = 0;
+	scan_sub.shutdown();
+	//setStatus(0);
 	free(laserPoints);
 }
 
 void LaserS::scanCallback (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 {
+//std::cout << std::endl << "Laser waiting!" << std::endl << std::endl;
 pthread_mutex_lock(&mutexL);
     if(syncronize_devices == true)
     {        
-        std::cout << std::endl << "Laser waiting!" << std::endl << std::endl;
+        
         pthread_cond_wait(&cond1,&mutexL);
     }
     try
@@ -71,7 +75,14 @@ pthread_mutex_lock(&mutexL);
         pthread_cond_signal(&cond2); 
     }
    pthread_mutex_unlock(&mutexL);
-   setStatus(1);
+   if(getStatus() == 1){
+   		this->scan_sub.shutdown();
+   		laser_on = false;	
+   }
+}
+
+void LaserS::Stop(){
+	
 }
 
 void LaserS::SaveFile(){

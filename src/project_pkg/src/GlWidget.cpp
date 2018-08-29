@@ -590,17 +590,17 @@ void GLWidget::Stop()
     }
     if(status == 2){
     	if(syncCond != 1){
-    		//laser->destroy();
+    		laser->setStatus(1);
     	}
     }
     if(status == 3){
     	if(syncCond != 1){
-    		//astraDevice->destroy();
+    		astraDevice->setStatus(1);
     	}
     }
     if(status == 5){
     	if(syncCond != 1){
-    		//imuDevice->destroy();
+    		imuDevice->setStatus(1);
     	}
     }
     
@@ -615,6 +615,7 @@ float *pointsL;
 void GLWidget::AstraInit(ros::NodeHandle nodeH){
     makeCurrent();
     if(syncCond == 0){
+    	delete astraDevice;
     	astraDevice = new Astra_Camera(nodeH);
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -679,6 +680,7 @@ void GLWidget::ImuInit(ros::NodeHandle nodeH){
 	//situation.append("IMU");
 	//situation_change = true;
     if(syncCond == 0){
+    	delete imuDevice;
         imuDevice = new ImuSensor(nodeH);
     }
     SetStatus(5);
@@ -687,6 +689,7 @@ void GLWidget::ImuInit(ros::NodeHandle nodeH){
 
 void GLWidget::LaserInit(ros::NodeHandle nodeH){
 	if(syncCond == 0){
+	   delete laser;
 	   laser = new LaserS(nodeH);
 	}
 	GLenum err = glewInit();
@@ -1192,6 +1195,7 @@ void GLWidget::ChangeMod(int i)
 void GLWidget::Syncronize(ros::NodeHandle nh, ros::NodeHandle nh2)
 {
     //syncDevices = new Syncronize_Devices(nh, nh2);
+    delete syncDevs;
 	syncDevs = new SyncronizeDevices(nh);
 	SetStatus(0);
    

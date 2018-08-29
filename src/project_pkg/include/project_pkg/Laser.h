@@ -46,6 +46,8 @@ public:
   static void* fileThreadFunc(void*);
   pthread_t fileThread;
   
+  void Stop();
+  
   int getStatus();
   void setStatus(int);
   

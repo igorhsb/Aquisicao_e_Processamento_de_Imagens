@@ -96,4 +96,11 @@ public:
   void Callback2(const std_msgs::String::ConstPtr& imu_msg );
   
   pcl::PointCloud<pcl::PointXYZRGBA>::Ptr laserCloud;
+  
+  int getStatus();
+  void setStatus(int);
+  
+  private:
+  
+  int status;
 };

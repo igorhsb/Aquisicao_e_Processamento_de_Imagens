@@ -4,6 +4,7 @@ bool imu_on = false;
 float roll = 0, pitch = 0, yaw = 0, imu_x = 0, imu_y = 0, imu_z = 0, init_x = 0, init_y = 0, init_z = 0, init_roll = 0, init_yaw = 0, init_pitch = 0;
 
 ImuSensor::ImuSensor(ros::NodeHandle n) :
+    status(0),
     n_(n)
 {
     //imu_sub = n_.subscribe("/imu/data", 1, &ImuSensor::Callback, this);
@@ -104,7 +105,12 @@ void ImuSensor::Callback2 (const std_msgs::String::ConstPtr& imu_msg)
     {
         pthread_cond_signal(&cond3);
     }
-pthread_mutex_unlock(&mutexI);
+	pthread_mutex_unlock(&mutexI);
+	
+	if(getStatus() == 1){
+   		this->imu_sub2.shutdown();
+   		imu_on = false;
+   	}
 }
 
 void ImuSensor::SaveFile(){
@@ -133,4 +139,14 @@ void* ImuSensor::fileThreadFunc(void* arg)
     std::cout << std::endl << std::endl << "Imu File Created!" << std::endl << std::endl;
     arq.close();
     pthread_exit(NULL);
+}
+
+int ImuSensor::getStatus()
+{
+	return status;
+}
+
+void ImuSensor::setStatus(int val)
+{
+	status = val;
 }

@@ -72,8 +72,11 @@ public:
   std::vector<float> depthData;
   ros::Publisher pubC;
   float* points;
-
+  int getStatus();
+  void setStatus(int);
+  
 private:
+  int status;
   ros::NodeHandle n_;
   image_transport::ImageTransport it_;
   image_transport::Subscriber astra_sub;

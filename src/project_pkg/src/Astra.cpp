@@ -19,7 +19,8 @@ Astra_Camera::Astra_Camera(ros::NodeHandle n):
   astra_sub3(it_,"/camera/depth/image_rect",100),
   ptc_sub(n_, "/camera/depth_registered/points", 100),
   rgb_sub(n_,"/camera/rgb/image_rect_color",100),
-  sync( syncPolicy( 10 ), rgb_sub, ptc_sub)
+  sync( syncPolicy( 10 ), rgb_sub, ptc_sub),
+  status(0)
 {
   astra_sub = it_.subscribe("/camera/rgb/image_rect_color", 1, &Astra_Camera::RgbCallback, this);
   //astra_sub2 = it_.subscribe("/camera/depth/image_rect", 1, &Astra_Camera::DepthCallback, this);
@@ -33,6 +34,10 @@ Astra_Camera::Astra_Camera(ros::NodeHandle n):
   //message_filters::Subscriber<sensor_msgs::Image> lsr_sub(n_, "/camera/rgb/image_rect_color", 100);
   //Synchronizer<syncPolicy> sync(syncPolicy(100), ptc_sub, lsr_sub);
   //sync.registerCallback(boost::bind(&Astra_Camera::PointCB,this, _1, _2));
+}
+
+Astra_Camera::~Astra_Camera(){
+
 }
 
 void Astra_Camera::RgbCallback(const sensor_msgs::ImageConstPtr& msg_rgb)
@@ -49,6 +54,11 @@ void Astra_Camera::RgbCallback(const sensor_msgs::ImageConstPtr& msg_rgb)
   }
   rgb = rgb_ptr->image;
   astra_on = true;
+//  std::cout << "Work 11111" << std::endl;
+  if(getStatus() == 1){
+  	this->astra_sub.shutdown();
+  	astra_on = false;	 		
+  }
 }
 
 void Astra_Camera::DepthCallback(const sensor_msgs::ImageConstPtr& msg_depth)
@@ -121,8 +131,12 @@ void Astra_Camera::PointCB(const sensor_msgs::ImageConstPtr &msg_rgb, const sens
   	std::vector<int> indicesNAN;
 	removeNaNFromPointCloud(*astraCloud, *astraCloud, indicesNAN);
 	points = (float*)astraCloud->points.data();
-	
+//	std::cout << "Work 22222" << std::endl;
 	astra_on = true;
+	if(getStatus() == 1){
+   		this->point_sub.shutdown();
+   		astra_on = false;	
+   	}
 }
 
 void Astra_Camera::PointCB2(const sensor_msgs::PointCloud2ConstPtr& msg){
@@ -140,5 +154,14 @@ void Astra_Camera::saveFiles(){
       cout << "astra files generate" << endl;
 }
 
+int Astra_Camera::getStatus()
+{
+	return status;
+}
+
+void Astra_Camera::setStatus(int val)
+{
+	status = val;
+}
 
 

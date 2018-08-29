@@ -10,6 +10,7 @@ SyncronizeDevices::SyncronizeDevices(ros::NodeHandle n) :
     astraCloud(new pcl::PointCloud<pcl::PointXYZRGBA>),
     astraPTC_sub(n_, "/camera/depth_registered/points", 100),
     laser_sub(n_, "/scan", 100),
+    status(0),
     sync( syncPolicy( 10 ), laser_sub, astraPTC_sub)
 {
 	int s = 729*6;
@@ -18,6 +19,7 @@ SyncronizeDevices::SyncronizeDevices(ros::NodeHandle n) :
 	sync.registerCallback(boost::bind(&SyncronizeDevices::scanCallback,this, _1, _2));
 	astraRGB_sub = it_.subscribe("/camera/rgb/image_rect_color", 1, &SyncronizeDevices::RgbCallback, this);
 	imu_sub = n_.subscribe("/imu_data_str", 1, &SyncronizeDevices::Callback2, this);
+
 }
 
 SyncronizeDevices::~SyncronizeDevices(){
@@ -88,6 +90,8 @@ void SyncronizeDevices::RgbCallback(const sensor_msgs::ImageConstPtr& msg_rgb)
   }
   rgb = rgb_ptr->image;
   //std::cout << "RGB" << std::endl;
+  if(getStatus() == 1)
+   		this->astraRGB_sub.shutdown();
 }
 
 void SyncronizeDevices::Callback2(const std_msgs::String::ConstPtr& imu_msg ){
@@ -131,4 +135,16 @@ void SyncronizeDevices::Callback2(const std_msgs::String::ConstPtr& imu_msg ){
 		pthread_mutex_unlock(&mutexI);
 		pthread_cond_signal(&cond3);
 	}
+	if(getStatus() == 1)
+   		this->imu_sub.shutdown();
+}
+
+int SyncronizeDevices::getStatus()
+{
+	return status;
+}
+
+void SyncronizeDevices::setStatus(int val)
+{
+	status = val;
 }

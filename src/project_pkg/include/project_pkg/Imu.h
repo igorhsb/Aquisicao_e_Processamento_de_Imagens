@@ -33,7 +33,8 @@ typedef struct Imu_struct{
 
 class ImuSensor{
 public:
-
+  int getStatus();
+  void setStatus(int);
   ros::NodeHandle n_;
   ros::Subscriber imu_sub, imu_sub2;
   sensor_msgs::PointCloud cloud;
@@ -44,4 +45,6 @@ public:
   void SaveFile();
   static void* fileThreadFunc(void*);
   pthread_t fileThread;
+private:
+	int status;
 };
