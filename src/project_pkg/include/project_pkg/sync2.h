@@ -100,7 +100,12 @@ public:
   int getStatus();
   void setStatus(int);
   
+  void SaveFile();
+  
   private:
   
   int status;
+  static void* fileThreadFunc(void*);
+  pthread_t fileThread;
+  
 };

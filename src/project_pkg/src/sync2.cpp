@@ -15,6 +15,7 @@ SyncronizeDevices::SyncronizeDevices(ros::NodeHandle n) :
 {
 	int s = 729*6;
 	laserCloud->points.resize(729);
+	astraCloud->points.resize(640*480);
 	laserPoints = (float*) malloc(s*sizeof(float));
 	sync.registerCallback(boost::bind(&SyncronizeDevices::scanCallback,this, _1, _2));
 	astraRGB_sub = it_.subscribe("/camera/rgb/image_rect_color", 1, &SyncronizeDevices::RgbCallback, this);
@@ -48,7 +49,7 @@ void SyncronizeDevices::scanCallback (const sensor_msgs::LaserScan::ConstPtr& sc
         laserPoints[i + 2] = cloud.points[index].z;
         laserPoints[i + 3] = 255*255*260;
         laserPoints[i + 4] = scan_in->ranges[index];
-        laserPoints[i + 5] = (-135+(0.35*index));
+        laserPoints[i + 5] = (-135+(0.35*index)); // angulo
         i+=6;   
         laserCloud->points[index].x = cloud.points[index].x;
         laserCloud->points[index].y = cloud.points[index].y;
@@ -57,7 +58,9 @@ void SyncronizeDevices::scanCallback (const sensor_msgs::LaserScan::ConstPtr& sc
     }
 	std::vector<int> indicesNAN2;
 	removeNaNFromPointCloud(*laserCloud, *laserCloud, indicesNAN2);
-
+    laserCloud->width = 729;
+	laserCloud->height = 1;
+	
     time1 = ((double)( clock() - ck1 )) / CLOCKS_PER_SEC;
     //cout << "Zed ---> Laser" << time1 << " seconds" << endl;
 	ck2 = clock();
@@ -74,6 +77,8 @@ void SyncronizeDevices::scanCallback (const sensor_msgs::LaserScan::ConstPtr& sc
 		pthread_cond_signal(&cond2);
 		pthread_mutex_unlock(&mutexL);
 	}
+	//if(getStatus() == 1)
+	
 }
 
 void SyncronizeDevices::RgbCallback(const sensor_msgs::ImageConstPtr& msg_rgb)
@@ -148,3 +153,31 @@ void SyncronizeDevices::setStatus(int val)
 {
 	status = val;
 }
+
+
+// Salvar Arquivos
+
+void SyncronizeDevices::SaveFile(){
+    int k;
+    k = pthread_create(&fileThread,NULL,fileThreadFunc,(void*)this);
+    pthread_join(fileThread,NULL);
+    if(k)
+		std::cout << std::endl <<"Falha laser" << std::endl; 
+}
+
+void* SyncronizeDevices::fileThreadFunc(void* arg)
+{
+    SyncronizeDevices* dev;
+    dev = (SyncronizeDevices*)arg;
+	pcl::io::savePCDFileASCII("laser_cloud.pcd", *dev->laserCloud);
+	pcl::io::savePCDFileASCII("astra_cloud.pcd", *dev->astraCloud);
+	
+	std::ofstream arq;
+	arq.open("imu_data.txt");				                			 
+	arq << "Roll: " << dev->dadosImu.roll << std::endl;
+	arq << "Pitch: " << dev->dadosImu.pitch << std::endl;
+	arq << "Yaw: " << dev->dadosImu.yaw << std::endl;
+    arq.close();
+    std::cout << std::endl << std::endl << "Arquivos Salvos" << std::endl << std::endl;
+}
+

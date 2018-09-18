@@ -35,7 +35,7 @@ LaserS::~LaserS(){
 
 void LaserS::scanCallback (const sensor_msgs::LaserScan::ConstPtr& scan_in)
 {
-//std::cout << std::endl << "Laser waiting!" << std::endl << std::endl;
+std::cout << std::endl << "Laser waiting!" << std::endl << std::endl;
 pthread_mutex_lock(&mutexL);
     if(syncronize_devices == true)
     {        
@@ -53,6 +53,12 @@ pthread_mutex_lock(&mutexL);
     }
     int index, i=0;
     for(index=0;index<729;index++){
+    	/*laserData[index].distancia= scan_in->ranges[index];
+        laserData[index].angulo=(-135+(0.35*index));
+        laserData[index].x = cloud.points[index].x;
+        laserData[index].y = cloud.points[index].y;
+        laserData[index].z = cloud.points[index].z;
+        */
         laserPoints[i] = cloud.points[index].x;
         laserPoints[i + 1] = cloud.points[index].y;
         laserPoints[i + 2] = cloud.points[index].z;

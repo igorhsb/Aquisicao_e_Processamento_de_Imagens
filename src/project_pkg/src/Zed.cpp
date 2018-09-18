@@ -22,6 +22,7 @@ void ZedDevice::Init(){
     init_params.coordinate_units = sl::UNIT_METER;
     init_params.camera_resolution = sl::RESOLUTION_HD720;
     init_params.coordinate_system = sl::COORDINATE_SYSTEM_RIGHT_HANDED_Y_UP;
+    init_params.camera_fps = 15;
 
     sl::ERROR_CODE err = zed.open(init_params);
     errorCode.append(sl::errorCode2str(err));
@@ -90,6 +91,8 @@ void ZedDevice::Stop(){
     zed.close();
 }
 
+bool hehe = true;
+
 void ZedDevice::convertSl2Cv(int i,sl::Mat &input){
     int cv_type = -1;
     switch (input.getDataType()) {
@@ -109,8 +112,13 @@ void ZedDevice::convertSl2Cv(int i,sl::Mat &input){
         depthView = cv::Mat(input.getHeight(), input.getWidth(), cv_type, input.getPtr<sl::uchar1>(sl::MEM_GPU));
     else
         pcd = cv::Mat(input.getHeight(), input.getWidth(), cv_type, input.getPtr<sl::uchar1>(sl::MEM_CPU)); 
+	if(hehe == true){
+		//cv::imshow("Image", rgbZ);
+		//cv::imwrite("sync1.jpg",rgbZ);
+		hehe = false;	
+		std::cout << std::endl <<  "Done " << std::endl;
+	}
 
-   // std::cout << std::endl <<  "Teste " << std::endl;
 }
 
 int ZedDevice::getStatus(){

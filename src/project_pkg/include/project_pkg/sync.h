@@ -83,8 +83,8 @@ extern int dispCB, dispCB2, vModCB, VModCB2, exitCond, saveSignal, syncCond;
 extern bool changeBTN, imu_on, situation_change, laser_on, astra_on, zed_on;
 extern QString situation;
 extern float roll, pitch, yaw, imu_x, imu_y, imu_z, init_x, init_y, init_z, init_yaw, init_roll, init_pitch;
-extern clock_t ck1, ck2, ck3, ck4, ck5;
-extern double time1, time2, time3, time4, time5;
+extern clock_t ck1, ck2, ck3, ck4, ck5, ckT;
+extern double time1, time2, time3, time4, time5, timeT;
 
 
 #endif

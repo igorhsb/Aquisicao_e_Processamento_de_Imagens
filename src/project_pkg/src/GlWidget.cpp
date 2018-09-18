@@ -5,8 +5,8 @@ int dispCB = 0, dispCB2 = 0, vModCB = 0, VModCB2 = 0, saveSignal = 0, exitCond =
 bool changeBTN = false, syncronize_devices = false;
 QString situation;
 bool situation_change = false;
-clock_t ck1, ck2, ck3, ck4, ck5;
-double time1 = 0, time2 = 0, time3 = 0, time4 = 0, time5 = 0;
+clock_t ck1, ck2, ck3, ck4, ck5, ckT;
+double time1 = 0, time2 = 0, time3 = 0, time4 = 0, time5 = 0, timeT = 0;
 
 GLWidget::GLWidget(QWidget *parent, int stat) :
     QGLWidget(parent),
@@ -868,7 +868,7 @@ void GLWidget::zedCallback(){
         cudaGraphicsSubResourceGetMappedArray(&ArrIm, pcuImageRes, 0, 0);
         cudaMemcpy2DToArray(ArrIm, 0, 0, zedLeftImage.getPtr<sl::uchar1>(sl::MEM_GPU), zedLeftImage.getStepBytes(sl::MEM_GPU), zedLeftImage.getWidth() * sizeof(sl::uchar4), zedLeftImage.getHeight(), cudaMemcpyDeviceToDevice);
         cudaGraphicsUnmapResources(1, &pcuImageRes, 0);
-        //zedDevice.convertSl2Cv(0,zedLeftImage);
+        zedDevice.convertSl2Cv(0,zedLeftImage);
     }
 
     // Map GPU Ressource for Depth. Depth image == 8U 4channels
@@ -878,7 +878,7 @@ void GLWidget::zedCallback(){
         cudaGraphicsSubResourceGetMappedArray(&ArrDe, pcuDepthRes, 0, 0);
         cudaMemcpy2DToArray(ArrDe, 0, 0, zedDepthImage.getPtr<sl::uchar1>(sl::MEM_GPU), zedDepthImage.getStepBytes(sl::MEM_GPU), zedLeftImage.getWidth() * sizeof(sl::uchar4), zedLeftImage.getHeight(), cudaMemcpyDeviceToDevice);
         cudaGraphicsUnmapResources(1, &pcuDepthRes, 0);
-        //zedDevice.convertSl2Cv(1,zedDepthImage);
+        zedDevice.convertSl2Cv(1,zedDepthImage);
     }
     
     if (zedDevice.zed.retrieveMeasure(zedPointCloud, sl::MEASURE_XYZRGBA) == sl::SUCCESS) {
@@ -887,10 +887,20 @@ void GLWidget::zedCallback(){
 		zedDevice.cloud2pcl(zedPointCloud);
     }
 }
+	
 	  if(first != true){
-	      time4 = ((double)( clock() - ck4 )) / CLOCKS_PER_SEC;
+	      /*time4 = ((double)( clock() - ck4 )) / CLOCKS_PER_SEC;
+	      timeT = ((double)( clock() - ckT )) / CLOCKS_PER_SEC;
+    	  
     	  //cout << "Imu ---> Zed" << time4 << " seconds" << endl;
     	  situation.clear();
+    	  if(timeT >= time4){
+    	  situation.append("Tempo Total (s): ");
+    	  situation.append(QString::number(timeT));
+    	  situation.append("\n");
+    	  situation.append("Imu ---> Zed (s): ");
+    	  situation.append(QString::number(time4));
+		  situation.append("\n");
     	  situation.append("Zed ---> Laser (s): ");
     	  situation.append(QString::number(time1));
     	  situation.append("\n");
@@ -900,14 +910,14 @@ void GLWidget::zedCallback(){
     	  situation.append("Astra ---> Imu (s): ");
     	  situation.append(QString::number(time3));
     	  situation.append("\n");
-    	  situation.append("Imu ---> Zed (s): ");
-    	  situation.append(QString::number(time4));
-		  situation.append("\n");
+    	  }
+    	  
 		  situation_change = true;
-		  
+		  */
 	  }
 	  if(syncCond == 1)
         {
+        	ckT = clock();
         	ck1 = clock();
             pthread_cond_signal(&cond1);
             first = false;
@@ -1128,8 +1138,8 @@ void GLWidget::AstraDraw()
 
 void GLWidget::LaserDraw()
 {
-
-/*    int i;
+/*
+    int i;
     double x,y,z;
     glClear(GL_COLOR_BUFFER_BIT);
     glRotated(0,0,0,1);
@@ -1196,8 +1206,9 @@ void GLWidget::Syncronize(ros::NodeHandle nh, ros::NodeHandle nh2)
 {
     //syncDevices = new Syncronize_Devices(nh, nh2);
     delete syncDevs;
-	syncDevs = new SyncronizeDevices(nh);
 	SetStatus(0);
+	syncDevs = new SyncronizeDevices(nh);
+	
    
    	//ros::NodeHandle imuNH;
     //imuDevice = new ImuSensor(imuNH);
@@ -1209,6 +1220,12 @@ void GLWidget::Syncronize(ros::NodeHandle nh, ros::NodeHandle nh2)
 
 void GLWidget::Syncronize_OFF()
 {
+	SetStatus(0);
+	pthread_mutex_unlock(&mutexZ);
+	pthread_mutex_unlock(&mutexL);
+	pthread_mutex_unlock(&mutexI);
+	std::cout << "He he" << std::endl;
+	//delete syncDevs;
     //syncronize_devices = false;
 }
 
@@ -1216,16 +1233,24 @@ void GLWidget::Syncronize_OFF()
 
 void GLWidget::saveFiles()
 {
-    if(zedOn == 1)
-        zedDevice.SaveFile();
-    
-    if(laserOn == 1)
-        laser->SaveFile();
+	if(syncCond == 0)
+	{
+		if(zedOn == 1)
+		    zedDevice.SaveFile();
+		
+		if(laserOn == 1)
+		    laser->SaveFile();
 
-    if(imu_on == true)
-        imuDevice->SaveFile();
-    if(astra_on == true)
-    	astraDevice->saveFiles();
+		if(imu_on == true)
+		    imuDevice->SaveFile();
+		if(astra_on == true)
+			astraDevice->saveFiles();
+    }
+    else
+    {
+    	syncDevs->SaveFile();
+    	zedDevice.SaveFile();
+    }
 }
 
 void GLWidget::testGPIO(){

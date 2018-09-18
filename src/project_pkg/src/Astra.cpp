@@ -131,7 +131,7 @@ void Astra_Camera::PointCB(const sensor_msgs::ImageConstPtr &msg_rgb, const sens
   	std::vector<int> indicesNAN;
 	removeNaNFromPointCloud(*astraCloud, *astraCloud, indicesNAN);
 	points = (float*)astraCloud->points.data();
-//	std::cout << "Work 22222" << std::endl;
+	std::cout << "Work 22222" << std::endl;
 	astra_on = true;
 	if(getStatus() == 1){
    		this->point_sub.shutdown();

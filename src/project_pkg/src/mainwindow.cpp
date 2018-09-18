@@ -112,6 +112,7 @@ void MainWindow::updateBTN(){
 	else{
 		if(state_sync == true){
 			this->ui->checkBox->setChecked(false);
+			
 		}
 		first_sync = true;
 	}
@@ -418,6 +419,8 @@ void MainWindow::on_checkBox_stateChanged(int arg1)
     if(arg1 == 0){
     	situation.append("Syncronization OFF");
     	syncCond = 0;
+    	glViewer->Syncronize_OFF();
+
     }
     else{
         situation.append("Syncronization ON");

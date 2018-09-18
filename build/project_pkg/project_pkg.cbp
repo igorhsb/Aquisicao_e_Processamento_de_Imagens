@@ -996,6 +996,12 @@
       <Unit filename="/home/ubuntu/project_work/src/../../../../opt/ros/kinetic/share/catkin/cmake/catkin_package_xml.cmake">
           <Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\catkin\cmake\" />
       </Unit>
+      <Unit filename="/home/ubuntu/project_work/src/../../../../opt/ros/kinetic/share/catkin/cmake/custom_install.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\catkin\cmake\" />
+      </Unit>
+      <Unit filename="/home/ubuntu/project_work/src/../../../../opt/ros/kinetic/share/catkin/cmake/catkin_symlink_install.cmake">
+          <Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\catkin\cmake\" />
+      </Unit>
       <Unit filename="/home/ubuntu/project_work/src/../../../../opt/ros/kinetic/share/catkin/cmake/catkin_workspace.cmake">
           <Option virtualFolder="CMake Files\..\..\..\..\opt\ros\kinetic\share\catkin\cmake\" />
       </Unit>
