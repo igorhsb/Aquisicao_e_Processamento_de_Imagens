@@ -84,7 +84,7 @@ public:
   image_transport::ImageTransport it_;
   image_transport::Subscriber astraRGB_sub;
   
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr astraCloud;
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr astraCloud;
   float* points;
   LaserData laserData[729];
   float *laserPoints;
@@ -95,7 +95,7 @@ public:
   void RgbCallback(const sensor_msgs::ImageConstPtr& msg_rgb);
   void Callback2(const std_msgs::String::ConstPtr& imu_msg );
   
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr laserCloud;
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr laserCloud;
   
   int getStatus();
   void setStatus(int);

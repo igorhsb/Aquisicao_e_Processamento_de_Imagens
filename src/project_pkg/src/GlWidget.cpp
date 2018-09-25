@@ -1238,7 +1238,7 @@ void GLWidget::saveFiles()
 		if(zedOn == 1)
 		    zedDevice.SaveFile();
 		
-		if(laserOn == 1)
+		if(laser_on == true)
 		    laser->SaveFile();
 
 		if(imu_on == true)

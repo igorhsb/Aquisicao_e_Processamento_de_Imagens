@@ -6,7 +6,7 @@ bool zed_new_pointcloud = false;
 ZedDevice::ZedDevice():
     status(0),
     cont(0),
-  	zedCloud(new pcl::PointCloud<pcl::PointXYZRGBA>)	
+  	zedCloud(new pcl::PointCloud<pcl::PointXYZRGB>)	
 {
 
 }

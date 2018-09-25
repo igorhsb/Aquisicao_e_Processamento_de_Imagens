@@ -6,8 +6,8 @@ SyncronizeDevices::SyncronizeDevices(ros::NodeHandle n) :
     it_(n),
     laser_sub_(n_, "/base_scan", 10),
     laser_notifier_(laser_sub_,listener_, "laser", 10),
-    laserCloud(new pcl::PointCloud<pcl::PointXYZRGBA>),
-    astraCloud(new pcl::PointCloud<pcl::PointXYZRGBA>),
+    laserCloud(new pcl::PointCloud<pcl::PointXYZRGB>),
+    astraCloud(new pcl::PointCloud<pcl::PointXYZRGB>),
     astraPTC_sub(n_, "/camera/depth_registered/points", 100),
     laser_sub(n_, "/scan", 100),
     status(0),
@@ -69,6 +69,9 @@ void SyncronizeDevices::scanCallback (const sensor_msgs::LaserScan::ConstPtr& sc
 	 // Remover NaN se existir
   	std::vector<int> indicesNAN;
 	removeNaNFromPointCloud(*astraCloud, *astraCloud, indicesNAN);
+	
+	astra_on = true;
+	laser_on = true;
 	
 	if(syncCond == 1){
 	    time2 = ((double)( clock() - ck2 )) / CLOCKS_PER_SEC;
@@ -180,4 +183,3 @@ void* SyncronizeDevices::fileThreadFunc(void* arg)
     arq.close();
     std::cout << std::endl << std::endl << "Arquivos Salvos" << std::endl << std::endl;
 }
-

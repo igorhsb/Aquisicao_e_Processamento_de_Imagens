@@ -51,7 +51,7 @@ public:
   int getStatus();
   void setStatus(int);
   
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr laserCloud;
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr laserCloud;
   
   private:
   int status;

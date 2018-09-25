@@ -16,12 +16,15 @@ LaserS::LaserS(ros::NodeHandle n) :
     status(0),
     laser_sub_(n_, "/base_scan", 10),
     laser_notifier_(laser_sub_,listener_, "laser", 10),
-    laserCloud(new pcl::PointCloud<pcl::PointXYZRGBA>)
+    laserCloud(new pcl::PointCloud<pcl::PointXYZRGB>)
 {
 	int s = 729*6;
+	laserCloud->width = 729;
+	laserCloud->height = 1;
 	laserCloud->points.resize(729);
 	laserPoints = (float*) malloc(s*sizeof(float));
     scan_sub = n_.subscribe("/scan", 1, &LaserS::scanCallback, this);
+    
     //setStatus(1);
     //  scan_pub_ = n_.advertise<sensor_msgs::PointCloud>("/my_cloud",1);
     //scan_sub.shutdown();
@@ -103,7 +106,7 @@ void* LaserS::fileThreadFunc(void* arg)
 {
     LaserS* l;
     l = (LaserS*)arg;
-    std::ofstream arq;
+/*    std::ofstream arq;
     int i;
 
     arq.open("laser_data.txt");				  
@@ -116,7 +119,10 @@ void* LaserS::fileThreadFunc(void* arg)
         arq << l->laserData[i].z;			 
         arq << std::endl;
     }
-    arq.close();
+    arq.close();*/
+  
+  pcl::io::savePCDFileASCII("laser_cloud.pcd", *l->laserCloud);
+  
     std::cout << std::endl << std::endl << "Laser File Created!" << std::endl << std::endl;
 }
 

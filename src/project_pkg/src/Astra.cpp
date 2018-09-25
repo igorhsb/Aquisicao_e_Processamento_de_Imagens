@@ -14,7 +14,7 @@ bool astra_on = false;
 Astra_Camera::Astra_Camera(ros::NodeHandle n):
   n_(n),
   it_(n),
-  astraCloud(new pcl::PointCloud<pcl::PointXYZRGBA>),
+  astraCloud(new pcl::PointCloud<pcl::PointXYZRGB>),
   astra_sub2(it_,"/camera/rgb/image_rect_color",100),
   astra_sub3(it_,"/camera/depth/image_rect",100),
   ptc_sub(n_, "/camera/depth_registered/points", 100),

@@ -42,7 +42,7 @@ public:
     static void* fileThreadFunc(void*);
     pthread_t fileThread;
 	float *points; 
-	pcl::PointCloud<pcl::PointXYZRGBA>::Ptr zedCloud;
+	pcl::PointCloud<pcl::PointXYZRGB>::Ptr zedCloud;
 	void cloud2pcl(sl::Mat& input);
 	float convertColor(float);
 	

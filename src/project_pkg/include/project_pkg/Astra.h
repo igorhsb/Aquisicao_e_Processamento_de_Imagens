@@ -68,7 +68,7 @@ public:
   void saveFiles();
   cv::Mat rgb, depth, depthView;
   sensor_msgs::PointCloud2* astraPoints;
-  pcl::PointCloud<pcl::PointXYZRGBA>::Ptr astraCloud;
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr astraCloud;
   std::vector<float> depthData;
   ros::Publisher pubC;
   float* points;
